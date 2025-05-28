@@ -1,0 +1,39 @@
+<div class="movie-details">
+    <div class="details-header">
+        <h2>{{ title }}</h2>
+        <div class="details-meta">
+            <span>{{ details.year }}</span>
+            <span>{{ details.rated }}</span>
+            <span>{{ details.runtime }}</span>
+        </div>
+    </div>
+
+    <div class="details-content">
+        <div class="details-poster">
+            <img src="{{ details.poster }}" alt="{{ title }} poster">
+        </div>
+
+        <div class="details-info">
+            <div class="details-row">
+                <strong>Genre:</strong> {{ details.genre }}
+            </div>
+            <div class="details-row">
+                <strong>Director:</strong> {{ details.director }}
+            </div>
+            <div class="details-row">
+                <strong>Actors:</strong> {{ details.actors }}
+            </div>
+            <div class="details-row">
+                <strong>Plot:</strong> {{ details.plot }}
+            </div>
+            <div class="details-ratings">
+                <div class="rating">
+                    <strong>IMDb:</strong> {{ details.imdb }}/10
+                </div>
+                <div class="rating">
+                    <strong>Metascore:</strong> {{ details.metascore }}/100
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

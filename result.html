@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recommendations for {{ movie }}</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-top">
+                <h1 class="title">Movie<span>Match</span></h1>
+                <div class="header-actions">
+                    <button id="theme-toggle" class="theme-toggle">
+                        <span class="dark-icon">🌙</span>
+                        <span class="light-icon">☀️</span>
+                    </button>
+                    {% if 'username' in session %}
+                        <a href="{{ url_for('profile') }}" class="profile-link">👤 {{ session['username'] }}</a>
+                        <a href="{{ url_for('logout') }}" class="logout-link">Logout</a>
+                    {% else %}
+                        <a href="{{ url_for('login') }}" class="login-link">Login</a>
+                        <a href="{{ url_for('register') }}" class="register-link">Register</a>
+                    {% endif %}
+                </div>
+            </div>
+            <p class="subtitle">Because you liked <em>"{{ movie }}"</em></p>
+        </header>
+
+        <main class="main-content">
+            <h2 class="recommendation-title">We think you'll love these:</h2>
+
+            <!-- Updated Movie Grid Section -->
+            <div class="movie-grid">
+                {% for title in results %}
+                <div class="movie-card" data-title="{{ title }}">
+                    <div class="poster-container">
+                        <img src="{{ get_poster(title) }}" alt="{{ title }}" class="movie-poster">
+                        <div class="movie-rating">⭐ 7.8/10</div>
+                        {% if 'username' in session %}
+                        <button class="favorite-button" data-movie="{{ title }}">
+                            ♥
+                        </button>
+                        {% endif %}
+                    </div>
+                    <h3 class="movie-title">{{ title }}</h3>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="back-button-container">
+                <a href="/" class="back-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+                    Search Again
+                </a>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>Powered by Flask & OMDB API</p>
+        </footer>
+    </div>
+
+    <!-- Movie Details Modal -->
+    <div id="movie-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div id="movie-details-content"></div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script>
+        // Initialize theme
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', currentTheme);
+
+        // Add event listeners for movie cards
+        document.querySelectorAll('.movie-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const title = this.getAttribute('data-title');
+                fetchMovieDetails(title);
+            });
+        });
+
+        // Favorite buttons
+        document.querySelectorAll('.favorite-button').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const movieTitle = this.getAttribute('data-movie');
+                toggleFavorite(movieTitle, this);
+            });
+        });
+
+        // Initialize favorite buttons
+        {% if 'username' in session %}
+            // Check which movies are already favorites
+            checkFavorites();
+        {% endif %}
+    </script>
+</body>
+</html>

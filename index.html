@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Recommender</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-top">
+                <h1 class="title">Movie<span>Match</span></h1>
+                <div class="header-actions">
+                    <button id="theme-toggle" class="theme-toggle">
+                        <span class="dark-icon">🌙</span>
+                        <span class="light-icon">☀️</span>
+                    </button>
+                    {% if 'username' in session %}
+                        <a href="{{ url_for('profile') }}" class="profile-link">👤 {{ session['username'] }}</a>
+                        <a href="{{ url_for('logout') }}" class="logout-link">Logout</a>
+                    {% else %}
+                        <a href="{{ url_for('login') }}" class="login-link">Login</a>
+                        <a href="{{ url_for('register') }}" class="register-link">Register</a>
+                    {% endif %}
+                </div>
+            </div>
+            <p class="subtitle">Discover your next favorite film</p>
+        </header>
+
+        <main class="main-content">
+            <form method="POST" class="search-form" id="search-form">
+                <div class="search-box">
+                    <input type="text" id="movie" name="movie" placeholder="Enter a movie you like..." required autocomplete="off">
+                    <button type="submit" class="search-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div id="suggestions" class="suggestions-box"></div>
+            </form>
+
+            <div id="loader" class="loader"></div>
+
+            {% if error %}
+                <div class="error-message">
+                    {{ error }}
+                </div>
+            {% endif %}
+        </main>
+
+        <footer class="footer">
+            <p>Powered by Flask & OMDB API</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script>
+        // Initialize theme
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', currentTheme);
+
+        // Hide loader if error occurs
+        {% if error %}
+            document.getElementById('loader').style.display = 'none';
+        {% endif %}
+    </script>
+</body>
+</html>
